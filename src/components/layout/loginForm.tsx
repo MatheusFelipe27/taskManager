@@ -1,4 +1,3 @@
-import { simulateLogin } from '@/api/auth';
 import { loginInputSchema, LoginInputSchema } from '@/schemas/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -69,9 +68,14 @@ const LoginForm = () => {
   const onSubmit = async () => {
     setIsLoading(true)
     try{
-      const loginRes = await simulateLogin(userValue, passwordValue)
-      const result = await loginRes.json();
-      if(result.success){
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user: userValue, password: passwordValue }),
+      })
+      const data = await res.json();
+
+      if(res.ok && data.success){
         redirect("/management")
       }
       else{
@@ -135,7 +139,7 @@ const LoginForm = () => {
           )}
           {loginError && (
             <LoginErrorTypography>
-              Usuário ou senha inválidos.
+              Usuário ou senha inválidos
             </LoginErrorTypography>
           )}
           <LoginButton type="submit" variant="contained" fullWidth sx={{ mt: 4 }}>
