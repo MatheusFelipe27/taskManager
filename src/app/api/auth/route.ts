@@ -10,7 +10,7 @@ export const POST = async (req: Request) =>{
             { success: true, message: "Login realizado com sucesso!" },
             { status: 200 }
         )
-        res.cookies.set("user", user, { httpOnly: true, path: "/" });
+        res.cookies.set("user", user, { httpOnly: true, path: "/", maxAge: 60 * 60 * 24 * 7 });
         return res
     }
 

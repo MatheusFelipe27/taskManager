@@ -1,0 +1,7 @@
+import { NextResponse } from "next/server";
+
+export const POST = () => {
+  const res = NextResponse.json({ success: true })
+  res.cookies.set("user", "", { maxAge: 0, path: "/" })
+  return res
+}
