@@ -1,0 +1,10 @@
+[
+  {
+    "regexp": "^\\/taskManager(?:\\/(_next\\/data\\/[^/]{1,}))?\\/management(\\\\.json)?[\\/#\\?]?$",
+    "originalSource": "/management"
+  },
+  {
+    "regexp": "^\\/taskManager(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/(\\/?index|\\/?index\\\\.json))?[\\/#\\?]?$",
+    "originalSource": "/"
+  }
+]
