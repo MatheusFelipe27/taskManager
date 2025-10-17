@@ -1,12 +1,12 @@
 import { Tag } from "@/types/tagType";
-import { priorityType, statusType, TaskProps } from "@/types/taskType";
+import {TaskProps } from "@/types/taskType";
 
 export function normalizeTask(
   currentTaskQuantity: number,
   title: string,
   description: string,
-  priority: priorityType,
-  status: statusType,
+  priority: string,
+  status: string,
   tag?: Tag[],
 ): TaskProps {
   return {

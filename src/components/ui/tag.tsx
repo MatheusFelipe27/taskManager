@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, {useImperativeHandle, useState } from "react";
 import { Box, Chip, InputAdornment, TextField, Tooltip } from "@mui/material";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import { FieldErrors } from "react-hook-form";
@@ -10,13 +10,24 @@ import { Tag } from "@/types/tagType";
 
 interface TagProps {
 	errors: FieldErrors<TaskSchema>
+	ref?: React.Ref<TagRef>;
 }
 
-const TagComponent = ({errors}: TagProps) => {
+interface TagRef {
+  reset: () => void;
+}
+
+const TagComponent = ({errors, ref}: TagProps) => {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 	const tags = useTagStore((state) => state.tags)
 
+	console.log(selectedTags)
+
 	const [openModal, setOpenModal] = useState<boolean>(false)
+
+	useImperativeHandle(ref, () => ({
+    reset: () => setSelectedTags([]),
+  }));
 
 	const handleToggle = (tag: Tag) => {
     setSelectedTags((prev) =>

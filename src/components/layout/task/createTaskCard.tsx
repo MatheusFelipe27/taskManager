@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, MenuItem, Paper, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React from 'react'
-import { FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { LoginErrorTypography } from '../login/loginForm';
 import { useTaskStore } from '@/stores/useTaskStore';
 import TagComponent from '@/components/ui/tag';
@@ -48,17 +48,31 @@ const CreateTaskCard = () => {
   });
     const {
     register,
+    watch,
     formState: { errors }
   } = methods
 
   const addTask = useTaskStore((state)=> state.addTask)
   const taskSize = useTaskStore((state)=> state.tasks.length)
+  const tagRef = React.useRef<{ reset: () => void }>(null);
+
 
   const onSubmit = (data: TaskSchema) =>{
     const {title, description, priority, status, tags} = data
     const normalizedTask = normalizeTask(taskSize, title, description, priority, status, tags)
     addTask(normalizedTask)
+    methods.reset({
+      title: '',
+      description: '',
+      priority: '',
+      status: '',
+      tags: [],
+    })
+    tagRef.current?.reset();
   }
+
+  const allValues = watch()
+  console.log(allValues)
 
   return (
     <>
@@ -94,38 +108,50 @@ const CreateTaskCard = () => {
               </LoginErrorTypography>
             )}
 
-            <TextField
-              {...register("priority")}
-              select
-              label="Prioridade"
+            <Controller
               name="priority"
-            >
-              <MenuItem value="Alta">Alta</MenuItem>
-              <MenuItem value="Média">Média</MenuItem>
-              <MenuItem value="Baixa">Baixa</MenuItem>
-            </TextField>
+              control={methods.control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  select
+                  label="Prioridade"
+                >
+                  <MenuItem value="Alta">Alta</MenuItem>
+                  <MenuItem value="Média">Média</MenuItem>
+                  <MenuItem value="Baixa">Baixa</MenuItem>
+                </TextField>
+              )}
+            />
             {errors["priority"] && (
               <LoginErrorTypography sx={{marginTop:'-20px'}}>
                 {errors["priority"]?.message}
               </LoginErrorTypography>
             )}
 
-            <TextField
-              {...register("status")}
-              select
-              label="Status"
+            <Controller
               name="status"
-            >
-              <MenuItem value="Pendente">Pendente</MenuItem>
-              <MenuItem value="Em andamento">Em andamento</MenuItem>
-              <MenuItem value="Concluída">Concluída</MenuItem>
-            </TextField>
+              control={methods.control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  select
+                  label="Status"
+                >
+                  <MenuItem value="Pendente">Pendente</MenuItem>
+                  <MenuItem value="Em andamento">Em andamento</MenuItem>
+                  <MenuItem value="Concluída">Concluída</MenuItem>
+                </TextField>
+              )}
+            />
             {errors["status"] && (
               <LoginErrorTypography sx={{marginTop:'-20px'}}>
                 {errors["status"]?.message}
               </LoginErrorTypography>
             )}
-            <TagComponent errors={errors}/>
+            <TagComponent errors={errors} ref={tagRef}/>
             <ButtonCreate
               type="submit"
               variant="contained"

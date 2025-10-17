@@ -14,10 +14,12 @@ export const taskSchema = z.object({
   description: z
     .string()
     .nonempty("Descrição obrigatória"),
- priority: z
-    .enum(["Alta", "Média", "Baixa"], { message: "Prioridade obrigatória" }),
+  priority: z
+    .string()
+    .nonempty("Prioridade obrigatória"),  
   status: z
-    .enum(["Pendente", "Em andamento", "Concluída"], { message: "Status obrigatório" }),
+    .string()
+    .nonempty("Status obrigatório"),
   tags: z
     .array(tagSchema)
     .max(3, "Máximo de 3 tags permitidas")
