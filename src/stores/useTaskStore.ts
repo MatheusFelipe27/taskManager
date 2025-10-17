@@ -4,7 +4,7 @@ import { create } from "zustand";
 interface TaskStore {
   tasks: TaskProps[];
   addTask: (task: TaskProps) => void;
-  updateTask: (taskIndex: number, updatedTask: TaskProps) => void;
+  updateTask: (updatedTask: TaskProps) => void;
   removeTask: (taskIndex: number) => void;
   loadTasks: () => void;
 
@@ -20,10 +20,10 @@ export const useTaskStore = create<TaskStore>((set) => ({
       return { tasks: updated };
     }),
 
-  updateTask: (taskIndex, updatedTask) =>
+  updateTask: (updatedTask: TaskProps) =>
     set((state) => {
-      const updated = state.tasks.map((task, idx) =>
-        idx === taskIndex ? updatedTask : task
+      const updated = state.tasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task
       );
       localStorage.setItem("tasks", JSON.stringify(updated));
       return { tasks: updated };
@@ -31,7 +31,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
 
   removeTask: (taskIndex) =>
     set((state) => {
-      const updated = state.tasks.filter((_, idx) => idx !== taskIndex);
+      const updated = state.tasks.filter((task) => task.id !== taskIndex);
       localStorage.setItem("tasks", JSON.stringify(updated));
       return { tasks: updated };
     }),

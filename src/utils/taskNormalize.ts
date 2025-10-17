@@ -7,7 +7,7 @@ export function normalizeTask(
   description: string,
   priority: string,
   status: string,
-  tag?: Tag[],
+  tags?: Tag[],
 ): TaskProps {
   return {
     id: currentTaskQuantity + 1,
@@ -15,6 +15,6 @@ export function normalizeTask(
     description,
     priority,
     status,
-    tag
+    tags
   };
 }

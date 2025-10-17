@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
-import { ContainerWrapper } from './createTaskCard'
+import React, { useEffect, useState } from 'react'
+import CreateTaskCard, { ContainerWrapper } from './createTaskCard'
 import FilterSelect from './filterSelect'
-import { Box, TablePagination, TextField } from '@mui/material'
+import { Box, IconButton, Modal, TablePagination, TextField } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import TaskView from './taskView'
 import { useTaskStore } from '@/stores/useTaskStore'
+import { TaskProps } from '@/types/taskType'
+import CloseIcon from "@mui/icons-material/Close";
+
 
   const FilterBox = styled(Box)(({})=>({
     display:'flex',
@@ -43,13 +46,22 @@ import { useTaskStore } from '@/stores/useTaskStore'
     </Box>
   );
 
+
+
 const TaskList = () => {
-  const [filters, setFilters] = useState(() => {
-    const savedFilters = localStorage.getItem('taskFilters');
-    return savedFilters
-      ? JSON.parse(savedFilters)
-      : { status: "Todos os status", priority: "Todas as prioridades" };
-  });
+  const [filters, setFilters] = useState({
+    status: 'Todos os status',
+    priority: 'Todas as prioridades',
+  })
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedFilters = localStorage.getItem('taskFilters')
+      if (savedFilters) {
+        setFilters(JSON.parse(savedFilters))
+      }
+    }
+  }, [])
+  
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageQuantity, setPageQuantity] = useState<number>(5);
 
@@ -85,6 +97,10 @@ const TaskList = () => {
     localStorage.setItem('taskFilters', JSON.stringify(newFilters));
   };
 
+  const [editingTask, setEditingTask] = useState<TaskProps | null>(null);
+
+  console.log("EDITATEI: ",editingTask)
+
   return (
     <>
       <ContainerWrapper>
@@ -119,7 +135,8 @@ const TaskList = () => {
                 description={task.description}
                 priority={task.priority}
                 status={task.status}
-                tag={task.tag}
+                tags={task.tags}
+                onEdit={(task) => setEditingTask(task)}
               />
             ))
           ) : (
@@ -127,8 +144,9 @@ const TaskList = () => {
           )}
         </TaskListContainer>
         </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-        <TablePagination
+      {paginatedTasks.length>0 && 
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+          <TablePagination
             component="div"
             count={filteredTasks.length}
             page={currentPage}
@@ -138,8 +156,41 @@ const TaskList = () => {
             rowsPerPageOptions={[5, 10, 25]}
             labelRowsPerPage="Tarefas por página"
           />
-      </Box>
+        </Box>
+      }
       </ContainerWrapper>
+      <Modal open={!!editingTask} onClose={() => setEditingTask(null)}>
+         <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            p: 4,
+            borderRadius: 2,
+            boxShadow: 24,
+            display: "inline-block",
+            maxHeight: "80vh",
+            overflowY: "auto",
+          }}
+        >
+          <IconButton
+            onClick={() => setEditingTask(null)}
+            sx={{ position: "absolute", top: 8, right: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          {editingTask && (
+            <CreateTaskCard
+              type="Edit"
+              taskToEdit={editingTask}
+              onClose={() => setEditingTask(null)}
+            />
+          )}
+        </Box>
+      </Modal>
     </>      
   )
 }

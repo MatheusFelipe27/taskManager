@@ -29,7 +29,7 @@ const ContentBox = styled(Box)(({}) => ({
         <ContentBox>
           {
             currentRoute==="Criar" ?
-            <CreateTaskCard/>
+            <CreateTaskCard type="Create"/>
             :
             currentRoute==="Tarefas"?
             <TaskList/>

@@ -7,5 +7,5 @@ export interface TaskProps {
     description: string
     priority: string
     status: string
-    tag?: Tag[]
+    tags?: Tag[]
 }

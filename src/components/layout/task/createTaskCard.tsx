@@ -42,9 +42,31 @@ const ButtonCreate = styled(Button)(({})=>({
 
 }))
 
-const CreateTaskCard = () => {
+interface CreateCardTaskProps{
+  type:string
+  taskToEdit?: TaskSchema & { id: number };
+  onClose?: () => void;
+
+}
+
+const CreateTaskCard = ({type, taskToEdit, onClose}: CreateCardTaskProps) => {
   const methods = useForm<TaskSchema>({
-    resolver: zodResolver(taskSchema)
+    resolver: zodResolver(taskSchema),
+    defaultValues: type === 'Edit' && taskToEdit
+    ? {
+        title: taskToEdit.title,
+        description: taskToEdit.description,
+        priority: taskToEdit.priority,
+        status: taskToEdit.status,
+        tags: taskToEdit.tags,
+      }
+    : {
+        title: '',
+        description: '',
+        priority: '',
+        status: '',
+        tags: [],
+      },
   });
     const {
     register,
@@ -52,6 +74,8 @@ const CreateTaskCard = () => {
   } = methods
 
   const addTask = useTaskStore((state)=> state.addTask)
+  const updateTask = useTaskStore((state) => state.updateTask);
+
   const taskSize = useTaskStore((state)=> state.tasks.length)
   const tagRef = React.useRef<TagRef>(null);
 
@@ -59,9 +83,24 @@ const CreateTaskCard = () => {
   const onSubmit = (data: TaskSchema) =>{
     const {title, description, priority, status} = data
     const tags = tagRef.current?.getSelectedTags() || [];
-    const normalizedTask = normalizeTask(taskSize, title, description, priority, status, tags)
 
-    addTask(normalizedTask)
+    if(type==="Create"){
+      const normalizedTask = normalizeTask(taskSize, title, description, priority, status, tags)
+      addTask(normalizedTask)
+    }
+    else if(type==="Edit" && taskToEdit){
+      const updatedTask = {
+        ...taskToEdit,
+        title,
+        description,
+        priority,
+        status,
+        tags,
+      };
+      updateTask(updatedTask);
+      if (onClose) onClose();
+    }
+
     methods.reset({
       title: '',
       description: '',
@@ -72,11 +111,17 @@ const CreateTaskCard = () => {
     tagRef.current?.reset();
   }
 
+  console.log(taskToEdit)
+
   return (
     <>
       <ContainerWrapper>
         <Typography variant="h5" sx={{ marginBottom: "16px", fontWeight: 600 }}>
-          Crie sua tarefa
+          {type==="Create"?
+            "Crie sua tarefa"
+            :
+            "Edite sua tarefa"
+          }
         </Typography>
         <FormProvider {...methods}>
           <FormBox onSubmit={methods.handleSubmit(onSubmit)}>
@@ -149,12 +194,16 @@ const CreateTaskCard = () => {
                 {errors["status"]?.message}
               </LoginErrorTypography>
             )}
-            <TagComponent errors={errors} ref={tagRef}/>
+            <TagComponent errors={errors} ref={tagRef} initialTags={taskToEdit?.tags ?? []} />
             <ButtonCreate
               type="submit"
               variant="contained"
             >
-              Criar tarefa
+              {type==="Create"?
+                "Criar tarefa"
+                :
+                "Editar tarefa"
+              }
             </ButtonCreate>
           </FormBox>  
         </FormProvider>

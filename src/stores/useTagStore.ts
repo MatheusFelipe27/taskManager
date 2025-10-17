@@ -21,8 +21,8 @@ export const useTagStore = create<TagStore>((set) => ({
 
   updateTag: (tagIndex, updatedTag) =>
     set((state) => {
-      const updated = state.tags.map((tag, idx) =>
-        idx === tagIndex ? updatedTag : tag
+      const updated = state.tags.map((tag) =>
+        tag.id === tagIndex ? updatedTag : tag
       );
       localStorage.setItem("tags", JSON.stringify(updated));
       return { tags: updated };
@@ -30,7 +30,7 @@ export const useTagStore = create<TagStore>((set) => ({
 
   removeTag: (tagIndex) =>
     set((state) => {
-      const updated = state.tags.filter((_, idx) => idx !== tagIndex);
+      const updated = state.tags.filter((tag) => tag.id !== tagIndex);
       localStorage.setItem("tags", JSON.stringify(updated));
       return { tags: updated };
     }),

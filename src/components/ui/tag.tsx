@@ -11,30 +11,33 @@ import { Tag } from "@/types/tagType";
 interface TagProps {
 	errors: FieldErrors<TaskSchema>
 	ref?: React.Ref<TagRef>;
+	initialTags?: Tag[];
 }
 
 export interface TagRef {
   reset: () => void;
   getSelectedTags: () => Tag[];
+  setTags: (tags: Tag[]) => void;
 }
 
-const TagComponent = ({errors, ref}: TagProps) => {
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+const TagComponent = ({errors, ref, initialTags}: TagProps) => {
+  	const [selectedTags, setSelectedTags] = useState<Tag[]>(initialTags || []);
 	const tags = useTagStore((state) => state.tags)
 	const [openModal, setOpenModal] = useState<boolean>(false)
 
 	useImperativeHandle(ref, () => ({
-    reset: () => setSelectedTags([]),
-	getSelectedTags: () => selectedTags,
-  }));
+		reset: () => setSelectedTags([]),
+		getSelectedTags: () => selectedTags,
+		setTags: (tags: Tag[]) => setSelectedTags(tags),
+	}));
 
 	const handleToggle = (tag: Tag) => {
-    setSelectedTags((prev) =>
-      prev.some((t) => t.id === tag.id)
-        ? prev.filter((t) => t.id !== tag.id)
-        : [...prev, tag]
-    );
-  };
+		setSelectedTags((prev) =>
+		prev.some((t) => t.id === tag.id)
+			? prev.filter((t) => t.id !== tag.id)
+			: [...prev, tag]
+		);
+	};
 
   return (
 		<>
