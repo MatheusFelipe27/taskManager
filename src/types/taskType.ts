@@ -8,4 +8,5 @@ export interface TaskProps {
     priority: string
     status: string
     tags?: Tag[]
+    created_at: string; 
 }

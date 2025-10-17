@@ -15,6 +15,7 @@ export function normalizeTask(
     description,
     priority,
     status,
-    tags
+    created_at: new Date().toISOString(),
+    tags,
   };
 }

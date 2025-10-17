@@ -96,6 +96,7 @@ const CreateTaskCard = ({type, taskToEdit, onClose}: CreateCardTaskProps) => {
         priority,
         status,
         tags,
+        created_at: new Date().toISOString()
       };
       updateTask(updatedTask);
       if (onClose) onClose();
@@ -110,8 +111,6 @@ const CreateTaskCard = ({type, taskToEdit, onClose}: CreateCardTaskProps) => {
     })
     tagRef.current?.reset();
   }
-
-  console.log(taskToEdit)
 
   return (
     <>

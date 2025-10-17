@@ -53,6 +53,9 @@ const TaskList = () => {
     status: 'Todos os status',
     priority: 'Todas as prioridades',
   })
+
+  const [sortOption, setSortOption] = useState<'none' | 'created_at' | 'priority'>('none');
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedFilters = localStorage.getItem('taskFilters')
@@ -77,7 +80,35 @@ const TaskList = () => {
     return statusMatch && priorityMatch && searchMatch;
   })
 
-  const paginatedTasks = filteredTasks.slice(
+  const sortChange = (value: string) => {
+    if (value === "Mais recentes") setSortOption("created_at");
+    if (value === "Por prioridade") setSortOption("priority");
+    if (value === 'Sem ordenação') setSortOption('none');
+  };
+
+  const getSortLabel = (value: 'none' | 'created_at' | 'priority') => {
+    switch (value) {
+      case 'created_at':
+        return 'Mais recentes';
+      case 'priority':
+        return 'Por prioridade';
+      case 'none':
+      default:
+        return 'Sem ordenação';
+    }
+  };
+
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
+    if (sortOption === 'priority') {
+      const priorityOrder: Record<string, number> = { 'Alta': 3, 'Média': 2, 'Baixa': 1 };
+      return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
+    } else if (sortOption === 'created_at') {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }
+    return 0;
+  });
+
+  const paginatedTasks = sortedTasks.slice(
     currentPage * pageQuantity,
     currentPage * pageQuantity + pageQuantity
   );
@@ -99,8 +130,6 @@ const TaskList = () => {
 
   const [editingTask, setEditingTask] = useState<TaskProps | null>(null);
 
-  console.log("EDITATEI: ",editingTask)
-
   return (
     <>
       <ContainerWrapper>
@@ -111,8 +140,13 @@ const TaskList = () => {
               variant="outlined"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              sx={{width:'60%'}}
+              sx={{width:'40%'}}
               size="small"
+            />
+            <FilterSelect
+              initialState={getSortLabel(sortOption)}
+              onChange={sortChange}
+              options={["Sem ordenação","Mais recentes", "Por prioridade"]}
             />
             <FilterSelect
               initialState={filters.status}
@@ -136,6 +170,7 @@ const TaskList = () => {
                 priority={task.priority}
                 status={task.status}
                 tags={task.tags}
+                created_at={task.created_at}
                 onEdit={(task) => setEditingTask(task)}
               />
             ))

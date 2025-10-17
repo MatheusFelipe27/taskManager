@@ -16,7 +16,7 @@ interface TaskViewProps extends TaskProps {
   onEdit?: (task: TaskProps) => void;
 }
 
-const TaskView = ({id, title ,description, priority, status, tags, onEdit}: TaskViewProps) => {
+const TaskView = ({id, title ,description, priority, status, tags, created_at, onEdit}: TaskViewProps) => {
   const removeTask = useTaskStore((state)=> state.removeTask)
 
   const deleteTask = (id:number) =>{
@@ -24,7 +24,7 @@ const TaskView = ({id, title ,description, priority, status, tags, onEdit}: Task
   }
 
    const callUpdate = () => {
-    if (onEdit) onEdit({ id, title, description, priority, status, tags });
+    if (onEdit) onEdit({ id, title, description, priority, status, tags, created_at });
   };
 
   return (
