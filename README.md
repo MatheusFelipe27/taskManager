@@ -87,6 +87,13 @@ src/ \
 ├─ **types/** → Tipos e interfaces globais TypeScript \
 └─ **utils/** → Funções utilitárias e helpers
 
+### Deploy
+
+O projeto está implantado no Vercel.
+Após o build e deploy, a aplicação está disponível em:
+
+https://task-manager-91n45wd4d-matheusfelipe27s-projects.vercel.app/
+
 ## Como Executar a Aplicação
 
 Certifique-se de que o Node.js está instalado e siga os passos abaixo para rodar o projeto localmente:
@@ -100,3 +107,5 @@ npm run dev
 
 3. rodar testes:
 npm run test
+
+
