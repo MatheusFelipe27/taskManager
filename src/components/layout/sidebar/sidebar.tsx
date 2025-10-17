@@ -11,9 +11,10 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import React, { useState } from "react";
+import React from "react";
 import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import { useRouter } from "next/navigation";
+import { currentRouteType } from "@/app/(private)/management/page";
 
 const Aside = styled(Drawer)(({}) => ({
   "& .MuiDrawer-paper": {
@@ -50,10 +51,12 @@ const ButtonStyle = styled(Button)(({}) => ({
   textTransform: "none",
 }));
 
-type currentRouteType = "Tarefas" | "Logs" | "Criar";
+interface SidebarProps{
+  currentRoute: currentRouteType
+  setCurrentRoute: React.Dispatch<React.SetStateAction<currentRouteType>>;
+}
 
-const Sidebar = () => {
-  const [currentRoute, setCurrentRoute] = useState<currentRouteType>("Tarefas");
+const Sidebar = ({currentRoute, setCurrentRoute}: SidebarProps) => {
   const router = useRouter();
 
   const logout = async () => {
@@ -83,10 +86,10 @@ const Sidebar = () => {
               <ListItemText primary="Tarefas" />
             </StyledListItem>
             <StyledListItem
-              active={currentRoute === "Logs"}
-              onClick={() => setCurrentRoute("Logs")}
+              active={currentRoute === "Tags"}
+              onClick={() => setCurrentRoute("Tags")}
             >
-              <ListItemText primary="Logs de Tarefas" />
+              <ListItemText primary="Tags" />
             </StyledListItem>
           </List>
           <Box sx={{ display: "flex", alignItems: "center" }}>

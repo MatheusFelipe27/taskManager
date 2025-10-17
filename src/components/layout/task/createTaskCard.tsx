@@ -7,10 +7,10 @@ import React from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { LoginErrorTypography } from '../login/loginForm';
 import { useTaskStore } from '@/stores/useTaskStore';
-import TagComponent from '@/components/ui/tag';
+import TagComponent, { TagRef } from '@/components/ui/tag';
 import { normalizeTask } from '@/utils/taskNormalize';
 
-const TaskCard = styled(Paper)(({}) => ({
+export const ContainerWrapper = styled(Paper)(({}) => ({
   display: "flex",
   width: "70%",
   height:'80%',
@@ -48,18 +48,19 @@ const CreateTaskCard = () => {
   });
     const {
     register,
-    watch,
     formState: { errors }
   } = methods
 
   const addTask = useTaskStore((state)=> state.addTask)
   const taskSize = useTaskStore((state)=> state.tasks.length)
-  const tagRef = React.useRef<{ reset: () => void }>(null);
+  const tagRef = React.useRef<TagRef>(null);
 
 
   const onSubmit = (data: TaskSchema) =>{
-    const {title, description, priority, status, tags} = data
+    const {title, description, priority, status} = data
+    const tags = tagRef.current?.getSelectedTags() || [];
     const normalizedTask = normalizeTask(taskSize, title, description, priority, status, tags)
+
     addTask(normalizedTask)
     methods.reset({
       title: '',
@@ -71,12 +72,9 @@ const CreateTaskCard = () => {
     tagRef.current?.reset();
   }
 
-  const allValues = watch()
-  console.log(allValues)
-
   return (
     <>
-      <TaskCard>
+      <ContainerWrapper>
         <Typography variant="h5" sx={{ marginBottom: "16px", fontWeight: 600 }}>
           Crie sua tarefa
         </Typography>
@@ -160,7 +158,7 @@ const CreateTaskCard = () => {
             </ButtonCreate>
           </FormBox>  
         </FormProvider>
-      </TaskCard>
+      </ContainerWrapper>
     </>      
   )
 }

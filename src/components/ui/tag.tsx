@@ -13,20 +13,19 @@ interface TagProps {
 	ref?: React.Ref<TagRef>;
 }
 
-interface TagRef {
+export interface TagRef {
   reset: () => void;
+  getSelectedTags: () => Tag[];
 }
 
 const TagComponent = ({errors, ref}: TagProps) => {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 	const tags = useTagStore((state) => state.tags)
-
-	console.log(selectedTags)
-
 	const [openModal, setOpenModal] = useState<boolean>(false)
 
 	useImperativeHandle(ref, () => ({
     reset: () => setSelectedTags([]),
+	getSelectedTags: () => selectedTags,
   }));
 
 	const handleToggle = (tag: Tag) => {
