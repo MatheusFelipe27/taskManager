@@ -43,9 +43,9 @@ const LoginTextField = styled(TextField)(() => ({
   },
 }));
 
-const LoginErrorTypography = styled("span")(() => ({
+export const LoginErrorTypography = styled("span")(() => ({
   fontSize: "12px",
-  color: "#fca5a5"
+  color: "#f87171"
 }));
 
 const LoginForm = () => {
