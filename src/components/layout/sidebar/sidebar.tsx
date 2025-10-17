@@ -19,6 +19,7 @@ const Aside = styled(Drawer)(({}) => ({
   "& .MuiDrawer-paper": {
     backgroundColor: "#925FE2",
   },
+  
 }));
 
 const AsideBox = styled(Box)(({}) => ({
@@ -56,7 +57,6 @@ const Sidebar = () => {
   const router = useRouter();
 
   const logout = async () => {
-    console.log("Teste");
     await fetch("/api/logout", { method: "POST" });
     router.push("/");
   };

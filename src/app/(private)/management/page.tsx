@@ -1,5 +1,6 @@
 "use client"
 import Sidebar from "@/components/layout/sidebar/sidebar"
+import CreateTaskCard from "@/components/layout/task/createTaskCard";
 import { Box } from "@mui/material"
 import { styled } from "@mui/material/styles";
 
@@ -7,6 +8,8 @@ const Page = () => {
 
 const ContentBox = styled(Box)(({}) => ({
   display:"flex",
+  alignItems:'center',
+  justifyContent:'center',
   flexGrow: 1,          
   marginLeft: "280px",            
   height: "100vh",       
@@ -18,7 +21,7 @@ const ContentBox = styled(Box)(({}) => ({
       <Box sx={{display:"flex"}}>
         <Sidebar/>
         <ContentBox>
-          <h2 style={{color:'#f9f9f9'}}>CONTEUDO</h2>
+          <CreateTaskCard/>
         </ContentBox>
       </Box>
     </>      
